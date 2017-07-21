@@ -16,7 +16,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import java.util.ArrayList;
 
-
 public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
     private static final String TAG = "MIKE";
 
@@ -24,17 +23,17 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     SeekBar hoseLenSeek, flowRateSeek, elevationSeek;
     Spinner hoseTypeSpinner;
 
-    Double C = 0.0;
-    int Q = 0;
-    int elevLoss = 0;
-    int L = 0;
+    Double C = 0.0;     //Hose coefficient
+    int Q = 0;          //GPM
+    int elevLoss = 0;   //+/- .5 height in feet
+    int L = 0;          //Hose Length in feet
+
     int frictionLoss =0;
 
     ArrayList<HoseTypes> hoseTypes = new ArrayList<>();
     ArrayList<String> usHoseTypes = new ArrayList<>();
 
     Resources res;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,10 +126,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                 return true;
 
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
-
         }
     }
 
@@ -141,7 +137,6 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         elevationVal.setText(res.getString(R.string.elev_value, elevLoss));
 
         fricValue.setText(res.getString(R.string.fl_value, frictionLoss));
-
     }
 
     public void recalc(){
@@ -149,7 +144,6 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         // FL =  C  *  (Q  / 100) ^2 *   L   / 100
         double elevFl = elevLoss / 2;
         double newQ = (Q / 100.0) * (Q/100.0);
-  //      newQ = newQ * newQ;
 
         frictionLoss = (int) (C * newQ * (L / 100) + elevFl);
         updateUI();
@@ -159,19 +153,16 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         switch (seekBar.getId()){
             case R.id.seek_hose_length:
-                //update hose len variable
                 L = progress * 50;
                 recalc();
                 break;
 
             case R.id.seek_flow_rate:
-                //update flow rate variable
                 Q = progress * 10;
                 recalc();
                 break;
 
             case R.id.seek_elev:
-                //update elevation variable
                 elevLoss = 5 * (progress - 10);
                 recalc();
                 break;
@@ -187,5 +178,4 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     public void onStopTrackingTouch(SeekBar seekBar) {
 
     }
-
 }
