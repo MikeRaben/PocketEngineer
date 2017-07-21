@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Pocket Engineer</string>
+    <string name="lbl_FL">Friction Loss</string>
+    <string name="fl_value">%1$d psi</string>
+    <string name="lbl_elev">Elevation Gain/Loss</string>
+    <string name="lbl_flow_rate">Flow Rate (GPM)</string>
+    <string name="lbl_hose_length">Hose Length</string>
+    <string name="hose_len_val">%1$d Feet</string>
+    <string name="flow_value">%1$d GPM</string>
+    <string name="elev_value">%1$d Feet</string>
+    <string name="lbl_hose_type">Hose Type</string>
+    <string name="action_reset">Reset</string>
+</resources>
