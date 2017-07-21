@@ -1,6 +1,7 @@
 package com.bomberomedia.pocketengineer;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -14,10 +15,20 @@ import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
     private static final String TAG = "MIKE";
+    private AdView adView;
+
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     TextView hoseLenVal, flowRateVal, elevationVal, fricValue;
     SeekBar hoseLenSeek, flowRateSeek, elevationSeek;
@@ -30,8 +41,8 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
     int frictionLoss =0;
 
-    ArrayList<HoseTypes> hoseTypes = new ArrayList<>();
-    ArrayList<String> usHoseTypes = new ArrayList<>();
+    ArrayList<HoseTypes> hoseTypes = HoseTypes.getUsHoseTypes();
+    ArrayList<String> userHoseTypes = new ArrayList<>();
 
     Resources res;
 
@@ -39,30 +50,36 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Log.d(TAG, "C: " + C + "  Q: " + Q + "  L: " + L + "EL: " + elevLoss);
-
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
         res = getResources();
 
-        hoseTypes.add(new HoseTypes(0.75, 1100.0, Boolean.TRUE));
-        hoseTypes.add(new HoseTypes(1.0, 150.0, Boolean.TRUE));
-        hoseTypes.add(new HoseTypes(1.25, 80.0, Boolean.TRUE));
-        hoseTypes.add(new HoseTypes(1.5, 24.0, Boolean.TRUE));
-        hoseTypes.add(new HoseTypes(1.75, 15.5, Boolean.TRUE));
-        hoseTypes.add(new HoseTypes(2.0, 8.0, Boolean.TRUE));
-        hoseTypes.add(new HoseTypes(2.5, 2.0, Boolean.TRUE));
-        hoseTypes.add(new HoseTypes(3.0, 0.677, Boolean.TRUE));
-        hoseTypes.add(new HoseTypes(3.5, 0.34, Boolean.TRUE));
-        hoseTypes.add(new HoseTypes(4.0, 0.2, Boolean.TRUE));
-        hoseTypes.add(new HoseTypes(4.5, 0.1, Boolean.TRUE));
-        hoseTypes.add(new HoseTypes(5.0, 0.08, Boolean.TRUE));
-        hoseTypes.add(new HoseTypes(6.0, 0.05, Boolean.TRUE));
+        MobileAds.initialize(this, "ca-app-pub-3581816025507456~1968374174");
+
+        adView = (AdView) findViewById(R.id.adView);
+        AdRequest request = new AdRequest.Builder()
+                .addTestDevice("5718014B0F30D06E9979A741D0B6AFB9")
+                .build();
+
+        adView.loadAd(request);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        adView.setAdListener(new AdListener(){
+            @Override
+            public void onAdOpened() {
+                Bundle bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "1234");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "myAd");
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Ad");
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+            }
+        });
 
         for (int i=0; i < hoseTypes.size(); i++) {
             if (hoseTypes.get(i).active) {
-                usHoseTypes.add(hoseTypes.get(i).diameter.toString() + " inch");
+                userHoseTypes.add(hoseTypes.get(i).diameter.toString() + " inch");
             }
         }
 
@@ -81,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
         hoseTypeSpinner = (Spinner)findViewById(R.id.hose_type_spinner);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, usHoseTypes);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, userHoseTypes);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         hoseTypeSpinner.setAdapter(adapter);
 
@@ -144,8 +161,9 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         // FL =  C  *  (Q  / 100) ^2 *   L   / 100
         double elevFl = elevLoss / 2;
         double newQ = (Q / 100.0) * (Q/100.0);
+        double newL = (L / 100.0);
 
-        frictionLoss = (int) (C * newQ * (L / 100) + elevFl);
+        frictionLoss = (int) (C * newQ * newL + elevFl);
         updateUI();
     }
 
