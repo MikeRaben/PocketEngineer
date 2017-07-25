@@ -25,8 +25,9 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
-    private static final String TAG = "MIKE";
-    private AdView adView;
+    private static final String TAG = "BOMBERO";
+
+    private double seekStep = 10.0;
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     int elevLoss = 0;   //+/- .5 height in feet
     int L = 0;          //Hose Length in feet
 
-    int frictionLoss =0;
+    int frictionLoss = 0;
 
     ArrayList<HoseTypes> hoseTypes = HoseTypes.getUsHoseTypes();
     ArrayList<String> userHoseTypes = new ArrayList<>();
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
         MobileAds.initialize(this, "ca-app-pub-3581816025507456~1968374174");
 
-        adView = (AdView) findViewById(R.id.adView);
+        AdView adView = (AdView) findViewById(R.id.adView);
         AdRequest request = new AdRequest.Builder()
                 .addTestDevice("5718014B0F30D06E9979A741D0B6AFB9")
                 .build();
@@ -106,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 C = hoseTypes.get(position).coefficient;
+                flowRateSeek.setMax(hoseTypes.get(position).gpmMax / 10);
                 recalc();
             }
 

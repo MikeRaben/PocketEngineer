@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "187177334452",
+    "firebase_url": "https://pocketengineer-e5d07.firebaseio.com",
+    "project_id": "pocketengineer-e5d07",
+    "storage_bucket": "pocketengineer-e5d07.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:187177334452:android:d98d92e6ac135274",
+        "android_client_info": {
+          "package_name": "com.bomberomedia.pocketengineer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "187177334452-js47ckh1s3p8ebqnsr0e2f488h4mrulo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAejcPct4Pq1UlIvCXP2QtN57xxZ1xdcUk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
