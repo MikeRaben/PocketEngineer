@@ -1,17 +1,24 @@
 package com.bomberomedia.pocketengineer;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,10 +31,8 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
+public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener{
     private static final String TAG = "BOMBERO";
-
-    private double seekStep = 10.0;
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
@@ -88,6 +93,10 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         flowRateVal = (TextView)findViewById(R.id.tv_flow_rate_val);
         elevationVal = (TextView)findViewById(R.id.tv_elev_value);
         fricValue = (TextView) findViewById(R.id.tv_FL_value);
+
+        hoseLenVal.setOnClickListener(this);
+        flowRateVal.setOnClickListener(this);
+        // elevationVal.setOnClickListener(this);
 
         hoseLenSeek = (SeekBar)findViewById(R.id.seek_hose_length);
         flowRateSeek = (SeekBar)findViewById(R.id.seek_flow_rate);
@@ -197,5 +206,62 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        Log.d(TAG, "clicked " + v.getId());
+        switch (v.getId()){
+            case R.id.tv_hose_len_val:
+                showInputDialog("Hose Length", 0);
+                break;
+            case R.id.tv_flow_rate_val:
+                showInputDialog("Flow Rate", 1);
+                break;
+            case R.id.tv_elev_value:
+                showInputDialog("Elevation Gain/Loss", 2);
+                break;
+        }
+    }
+
+    private void showInputDialog(String inputTitle, final int inputType) {
+        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Enter " + inputTitle);
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setRawInputType(Configuration.KEYBOARD_12KEY);
+        alert.setView(input);
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //Put actions for OK button here
+                switch (inputType){
+                    case 0:
+                        //update hose len
+                        hoseLenSeek.setProgress((Integer.parseInt(input.getText().toString()))/50);
+                        L = Integer.parseInt(input.getText().toString());
+                        recalc();
+                        break;
+                    case 1:
+                        //update flow rate
+                        flowRateSeek.setProgress((Integer.parseInt(input.getText().toString()))/10);
+                        Q = Integer.parseInt(input.getText().toString());
+                        recalc();
+                        break;
+                    case 2:
+                        //update elev
+                        //TODO: figure out how to allow negative numbers in input
+                }
+            }
+        });
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //User cancelled, do nothing
+            }
+        });
+
+        alert.show();
+        input.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 }
