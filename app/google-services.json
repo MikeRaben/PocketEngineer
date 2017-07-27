@@ -1,16 +1,16 @@
 {
   "project_info": {
     "project_number": "187177334452",
-    "firebase_url": "https://pocketengineer-e5d07.firebaseio.com",
-    "project_id": "pocketengineer-e5d07",
-    "storage_bucket": "pocketengineer-e5d07.appspot.com"
+    "firebase_url": "https://pocketengineer2-e5d07.firebaseio.com",
+    "project_id": "pocketengineer2-e5d07",
+    "storage_bucket": "pocketengineer2-e5d07.appspot.com"
   },
   "client": [
     {
       "client_info": {
         "mobilesdk_app_id": "1:187177334452:android:d98d92e6ac135274",
         "android_client_info": {
-          "package_name": "com.bomberomedia.pocketengineer"
+          "package_name": "com.bomberomedia.pocketengineer2"
         }
       },
       "oauth_client": [

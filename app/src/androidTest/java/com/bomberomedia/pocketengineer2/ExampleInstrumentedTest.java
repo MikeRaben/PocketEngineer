@@ -1,4 +1,4 @@
-package com.bomberomedia.pocketengineer;
+package com.bomberomedia.pocketengineer2;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.bomberomedia.pocketengineer", appContext.getPackageName());
+        assertEquals("com.bomberomedia.pocketengineer2", appContext.getPackageName());
     }
 }
