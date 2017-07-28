@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
         AdView adView = (AdView) findViewById(R.id.adView);
         AdRequest request = new AdRequest.Builder()
-                .addTestDevice("5718014B0F30D06E9979A741D0B6AFB9")
                 .build();
 
         adView.loadAd(request);
